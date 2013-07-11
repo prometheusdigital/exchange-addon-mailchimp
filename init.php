@@ -78,9 +78,6 @@ function it_exchange_get_mail_chimp_lists( $api_key ) {
 function it_exchange_sign_up_email_to_mail_chimp_list() {
 	
 	$settings = it_exchange_get_option( 'addon_mail_chimp' );
-	
-	wp_mail( 'lew@ithemes.com', 'request', print_r( $_REQUEST, true ) );
-	wp_mail( 'lew@ithemes.com', 'request', print_r( $_POST, true ) );
 
 	if( ! empty( $settings['mail-chimp-api-key'] ) ) {
 		
