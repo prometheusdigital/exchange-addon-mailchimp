@@ -1,12 +1,12 @@
 jQuery(document).ready(function($) {
-	$(document).on('change', 'input#mail-chimp-api-key', function(event) {
+	$(document).on('change', 'input#mailchimp-api-key', function(event) {
 		var data = {
-			action: 'it_exchange_update_mail_chimp_lists',
+			action: 'it_exchange_update_mailchimp_lists',
 			api_key: $( this ).val()
 		};
 
 		$.post(ajaxurl, data, function(response) {
-			$( '#mail-chimp-list' ).replaceWith( response );
+			$( '#mailchimp-list' ).replaceWith( response );
 		});
 	});
 });
