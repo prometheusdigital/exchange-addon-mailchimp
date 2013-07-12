@@ -261,7 +261,6 @@ class IT_Exchange_MailChimp_Add_On {
             <p> <?php $form->add_text_box( 'mailchimp-label' ); ?> </p>
 			<h4><label for="mailchimp-double-optin"><?php _e( 'Enable Double Opt-in.', 'LION' ) ?> <span class="tip" title="<?php _e( 'Enabling double opt-in is a good way to prevent your list from being black listed as SPAM. Users will be sent a confirmation email from MailChimp after signing up, and will only be added to your list after they have confirmed their subscription.', 'LION' ); ?>">i</span></label></h4>
 			<p> <?php $form->add_check_box( 'mailchimp-double-optin' ); ?> </p>
-
 		</div>
 		<?php
 	}
