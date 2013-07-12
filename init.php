@@ -10,6 +10,26 @@ if ( !class_exists( 'MCAPI' ) )
 	require_once( 'mailchimp-api/MCAPI.class.php' );
 
 /**
+ * Adds actions to the plugins page for the iThemes Exchange Mail Chimp plugin
+ *
+ * @since 1.0.0
+ *
+ * @param array $meta Existing meta
+ * @param string $plugin_file the wp plugin slug (path)
+ * @param array $plugin_data the data WP harvested from the plugin header
+ * @param string $context 
+ * @return array
+*/
+function it_exchange_mail_chimp_plugin_row_actions( $actions, $plugin_file, $plugin_data, $context ) {
+	
+	$actions['setup_addon'] = '<a href="' . get_admin_url( NULL, 'admin.php?page=it-exchange-addons&add-on-settings=mail-chimp' ) . '">' . __( 'Setup Add-on', 'LION' ) . '</a>';
+	
+	return $actions;
+	
+}
+add_filter( 'plugin_action_links_exchange-addon-mailchimp/exchange-addon-mailchimp.php', 'it_exchange_mail_chimp_plugin_row_actions', 10, 4 );
+
+/**
  * Call back for settings page
  *
  * This is set in options array when registering the add-on and called from it_exchange_enable_addon()
@@ -34,25 +54,18 @@ function it_exchange_stripe_addon_admin_enqueue_scripts() {
 }
 add_action( 'admin_enqueue_scripts', 'it_exchange_stripe_addon_admin_enqueue_scripts' );
 
-/**
- * Adds actions to the plugins page for the iThemes Exchange Mail Chimp plugin
- *
- * @since 1.0.0
- *
- * @param array $meta Existing meta
- * @param string $plugin_file the wp plugin slug (path)
- * @param array $plugin_data the data WP harvested from the plugin header
- * @param string $context 
- * @return array
-*/
-function it_exchange_mail_chimp_plugin_row_actions( $actions, $plugin_file, $plugin_data, $context ) {
+function it_exchange_update_mail_chimp_lists_ajax() {
 	
-	$actions['setup_addon'] = '<a href="' . get_admin_url( NULL, 'admin.php?page=it-exchange-addons&add-on-settings=mail-chimp' ) . '">' . __( 'Setup Add-on', 'LION' ) . '</a>';
+	$lists = array();
 	
-	return $actions;
+	if ( ! empty( $_POST['api_key'] ) )
+		$lists = it_exchange_get_mail_chimp_lists( $_POST['api_key'] );
+
+	$form = new ITForm( array(), array( 'prefix' => 'it-exchange-add-on-mail_chimp' ) );
+	die( $form->get_drop_down( 'mail-chimp-list', $lists ) );
 	
 }
-add_filter( 'plugin_action_links_exchange-addon-mailchimp/exchange-addon-mailchimp.php', 'it_exchange_mail_chimp_plugin_row_actions', 10, 4 );
+add_action('wp_ajax_it_exchange_update_mail_chimp_lists', 'it_exchange_update_mail_chimp_lists_ajax');
 
 function it_exchange_get_mail_chimp_lists( $api_key ) {
 
