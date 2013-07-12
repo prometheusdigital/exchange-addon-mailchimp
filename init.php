@@ -78,29 +78,23 @@ function it_exchange_get_mail_chimp_lists( $api_key ) {
 function it_exchange_sign_up_email_to_mail_chimp_list() {
 	
 	$settings = it_exchange_get_option( 'addon_mail_chimp' );
-
+	
 	if( ! empty( $settings['mail-chimp-api-key'] ) ) {
 		
-		if ( ! empty( $_REQUEST['it-exchange-mail-chimp-signup'] ) ) {
-				
-			if ( ! empty( $_REQUEST['email'] ) )
-				$email = trim( $_REQUEST['email'] );
-			else if ( ! empty( $_REQUEST['sw-em'] ) )
-				$email = trim( $_REQUEST['sw-em'] );
+		if ( ! empty( $_POST['it-exchange-mail-chimp-signup'] ) ) {
+							
+			if ( ! empty( $_POST['email'] ) )
+				$email = trim( $_POST['email'] );
 			else
 				$email = false;
 				
-			if ( ! empty( $_REQUEST['first_name'] ) )
-				$fname = trim( $_REQUEST['first_name'] );
-			else if ( ! empty( $_REQUEST['sw-fn'] ) )
-				$fname = trim( $_REQUEST['sw-fn'] );
+			if ( ! empty( $_POST['first_name'] ) )
+				$fname = trim( $_POST['first_name'] );
 			else
 				$fname = false;
 				
-			if ( ! empty( $_REQUEST['last_name'] ) )
-				$lname = trim( $_REQUEST['last_name'] );
-			else if ( ! empty( $_REQUEST['sw-ln'] ) )
-				$lname = trim( $_REQUEST['sw-ln'] );
+			if ( ! empty( $_POST['last_name'] ) )
+				$lname = trim( $_POST['last_name'] );
 			else
 				$lname = false;
 									
