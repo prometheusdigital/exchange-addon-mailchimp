@@ -1,0 +1,121 @@
+# Translation of   by .
+# Copyright (C) 2013 
+# This file is distributed under the same license as the  package.
+# Chris Jean <support@ithemes.com>, 2013.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/exchange-addon-mailchimp\n"
+"POT-Creation-Date: 2013-07-12 08:52-0500\n"
+"PO-Revision-Date: 2013-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Chris Jean <support@ithemes.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: exchange-addon-mailchimp.php:28
+msgid "Mail Chimp"
+msgstr ""
+
+#: exchange-addon-mailchimp.php:29
+msgid "Add Mail Chimp Opt-In Checkbox to user registration form."
+msgstr ""
+
+#: init.php:25
+msgid "Setup Add-on"
+msgstr ""
+
+#: init.php:224
+msgid "Mail Chimp Settings"
+msgstr ""
+
+#: init.php:234
+msgid "Save Changes"
+msgstr ""
+
+#: init.php:252
+msgid ""
+"Mail Chimp allows store owners to manage and email lists of their currently "
+"subscribed customers."
+msgstr ""
+
+#: init.php:253
+msgid "Video:"
+msgstr ""
+
+#: init.php:253
+msgid "Setting Up Mail Chimp in Exchange"
+msgstr ""
+
+#: init.php:254
+msgid "To setup Mail Chimp in Exchange, complete the settings below."
+msgstr ""
+
+#: init.php:258
+msgid "Mail Chimp API Key"
+msgstr ""
+
+#: init.php:258
+msgid ""
+"Enter your Mail Chimp API Key from your Mail Chimp dashboard, under Account "
+"Settings -> Extras -> API Keys"
+msgstr ""
+
+#: init.php:263
+msgid "Mail Chimp List"
+msgstr ""
+
+#: init.php:263
+msgid ""
+"This is the list you want to use from Mail Chimp (only appears after saving "
+"your Mail Chimp API key)."
+msgstr ""
+
+#: init.php:269
+msgid "Sign-up Label"
+msgstr ""
+
+#: init.php:269
+msgid ""
+"This will be the label displayed next to the sign-up option on the "
+"registration page."
+msgstr ""
+
+#: init.php:275
+msgid "Enable Double Opt-in."
+msgstr ""
+
+#: init.php:275
+msgid ""
+"Enabling double opt-in is a good way to prevent your list from being black "
+"listed as SPAM. Users will be sent a confirmation email from Mail Chimp "
+"after signing up, and will only be added to your list after they have "
+"confirmed their subscription."
+msgstr ""
+
+#: init.php:298
+msgid "Error. Please try again"
+msgstr ""
+
+#: init.php:304
+msgid "Settings saved."
+msgstr ""
+
+#: init.php:309
+msgid "Settings not saved."
+msgstr ""
+
+#: init.php:326
+msgid "The Mail Chimp API Key field cannot be left blank."
+msgstr ""
+
+#: init.php:328
+msgid "The Mail Chimp sign-up label cannot be left blank."
+msgstr ""
+
+#: init.php:341
+msgid "Sign-up and receive updates via email!"
+msgstr ""
