@@ -24,20 +24,60 @@
  * @return void
 */
 function it_exchange_register_mailchimp_addon() {
-	$options = array(
-		'name'              => __( 'MailChimp', 'LION' ),
-		'description'       => __( 'Add MailChimp Opt-In Checkbox to user registration form.', 'LION' ),
-		'author'            => 'iThemes',
-		'author_url'        => 'http://ithemes.com/exchange/mailchimp/',
-		'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/images/mailchimp50px.png' ),
-		'file'              => dirname( __FILE__ ) . '/init.php',
-		'basename'          => plugin_basename( __FILE__ ),
-		'category'          => 'email',
-		'settings-callback' => 'it_exchange_mailchimp_settings_callback',
-	);
-	it_exchange_register_addon( 'mailchimp', $options );
+	$versions         = get_option( 'it-exchange-versions', false );
+	$current_version  = empty( $versions['current'] ) ? false: $versions['current'];
+	
+	if ( version_compare( $current_version, '1.0.3', '>' ) ) {
+		
+		$options = array(
+			'name'              => __( 'MailChimp', 'LION' ),
+			'description'       => __( 'Add MailChimp Opt-In Checkbox to user registration form.', 'LION' ),
+			'author'            => 'iThemes',
+			'author_url'        => 'http://ithemes.com/exchange/mailchimp/',
+			'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/images/mailchimp50px.png' ),
+			'file'              => dirname( __FILE__ ) . '/init.php',
+			'basename'          => plugin_basename( __FILE__ ),
+			'category'          => 'email',
+			'settings-callback' => 'it_exchange_mailchimp_settings_callback',
+		);
+		it_exchange_register_addon( 'mailchimp', $options );
+	
+	} else {
+			
+		add_action( 'admin_notices', 'it_exchange_add_mailchimp_nag' );
+		
+	}
+	
 }
 add_action( 'it_exchange_register_addons', 'it_exchange_register_mailchimp_addon' );
+
+/**
+ * Adds the MailChimp nag if not on the correct version of iThemes Exchange
+ *
+ * @since 1.0.0
+ * @return void
+*/
+function it_exchange_add_mailchimp_nag() {
+	?>
+	<div id="it-exchange-mailchimp-nag" class="it-exchange-nag">
+		<?php
+		_e( 'To use the MailChimp add-on for iThemes Exchange, you must be on the most recent version of iThemes Exchange. Please download and update your version of iThemes Exchange.', 'LION' );
+		?>
+	</div>
+    <?php
+}
+
+/**
+ * Loads the translation data for WordPress
+ *
+ * @uses load_plugin_textdomain()
+ * @since 1.0.0
+ * @return void
+*/
+function it_exchange_mailchimp_set_textdomain() {
+	load_plugin_textdomain( 'LION', false, plugin_basename( __FILE__  ) . '/lang/' );
+}
+add_action( 'plugins_loaded', 'it_exchange_mailchimp_set_textdomain' );
 
 /**
  * Registers Plugin with iThemes updater class
@@ -47,10 +87,8 @@ add_action( 'it_exchange_register_addons', 'it_exchange_register_mailchimp_addon
  * @param object $updater ithemes updater object
  * @return void
 */
-/*
 function ithemes_exchange_addon_stripe_updater_register( $updater ) { 
-	    $updater->register( 'exchange-addon-membership', __FILE__ );
+	    $updater->register( 'exchange-addon-mailchimp', __FILE__ );
 }
-add_action( 'ithemes_updater_register', 'ithemes_exchange_addon_membership_updater_register' );
+add_action( 'ithemes_updater_register', 'ithemes_exchange_addon_mailchimp_updater_register' );
 require( dirname( __FILE__ ) . '/lib/updater/load.php' );
-*/
