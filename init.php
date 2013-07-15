@@ -134,21 +134,61 @@ function it_exchange_sign_up_email_to_mailchimp_list() {
 }
 add_action( 'it_exchange_register_user', 'it_exchange_sign_up_email_to_mailchimp_list' );
 
-function it_exchange_mailchimp_sign_up( $result, $options ) {
-	
-	$settings = it_exchange_get_option( 'addon_mailchimp' );
-		
-	if (  ! empty( $settings['mailchimp-api-key'] ) 
-		&& ( empty( $options['format'] ) || 'html' === $options['format'] ) ) {
-		
-		$result = '<label for="it-exchange-mailchimp-signup"><input type="checkbox" id="it-exchange-mailchimp-signup" name="it-exchange-mailchimp-signup" /> ' . $settings['mailchimp-label'] . '</label>' . $result;
-		
-	}
-	
-	return $result;
-	
+/**
+ * This function adds our registration field to the list of fields included in the content-registration template part
+ *
+ * @since 1.0.0
+ *
+ * @param array $fields existing fields
+ * @return array
+*/
+function it_exchange_mailchimp_sign_up_add_field_to_content_registration_template_part( $fields ) { 
+
+    /** 
+     * We want to add our field right before the save button
+     * 1) Find the save button
+     * 2) Spice our value in right before the save button
+     * 3) In the event that the save button wasn't found, just tack onto the end
+    */
+
+    $save_key = array_search( 'save', $fields );
+    if ( false === $save_key )
+        $fields[] = 'mailchimp-signup';
+    else
+        array_splice( $fields, $save_key, 0, array( 'mailchimp-signup' ) );
+
+    return $fields;
 }
-add_filter( 'it_exchange_theme_api_registration_save', 'it_exchange_mailchimp_sign_up', 10, 2 );
+add_filter( 'it_exchange_get_content_registration_field_details', 'it_exchange_mailchimp_sign_up_add_field_to_content_registration_template_part' );
+
+/**
+ * This function tells Exchange to look in a directory in the MailChimp add-on for template parts
+ *
+ * @since 1.0.0
+ *
+ * @param array $template_paths existing template paths. Exchange core paths will be added after this filter.
+ * @param array $template_names the template part names we're looking for right now.
+ * @return array
+*/
+function it_exchange_mailchimp_add_template_directory( $template_paths, $template_names ) { 
+
+    /** 
+     * Use the template_names array to target a specific template part you want to add
+     * In this example, we're adding the following template part: content-registration/details/my-addon-field.php
+     * So we're going to only add our templates directory if Exchange is looking for that part.
+    */
+    if ( ! in_array( 'content-registration/details/mailchimp-signup.php', $template_names ) ) 
+        return $template_paths;
+
+    /** 
+     * If we are looking for the mailchimp-signup template part, go ahead and add our add_ons directory to the list
+     * No trailing slash
+    */
+    $template_paths[] = dirname( __FILE__ ) . '/templates';
+
+    return $template_paths;
+}
+add_filter( 'it_exchange_possible_template_paths', 'it_exchange_mailchimp_add_template_directory', 10, 2 );
 
 class IT_Exchange_MailChimp_Add_On {
 
