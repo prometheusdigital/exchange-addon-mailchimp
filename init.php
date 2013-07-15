@@ -151,11 +151,11 @@ function it_exchange_mailchimp_sign_up_add_field_to_content_registration_templat
      * 3) In the event that the save button wasn't found, just tack onto the end
     */
 
-    $save_key = array_search( 'save', $fields );
-    if ( false === $save_key )
+    $key = array_search( 'password2', $fields );
+    if ( false === $key  )
         $fields[] = 'mailchimp-signup';
     else
-        array_splice( $fields, $save_key, 0, array( 'mailchimp-signup' ) );
+        array_splice( $fields, ++$key, 0, array( 'mailchimp-signup' ) );
 
     return $fields;
 }
@@ -177,7 +177,7 @@ function it_exchange_mailchimp_add_template_directory( $template_paths, $templat
      * In this example, we're adding the following template part: content-registration/details/my-addon-field.php
      * So we're going to only add our templates directory if Exchange is looking for that part.
     */
-    if ( ! in_array( 'content-registration/details/mailchimp-signup.php', $template_names ) ) 
+    if ( ! in_array( 'content-registration/fields/details/mailchimp-signup.php', $template_names ) ) 
         return $template_paths;
 
     /** 
