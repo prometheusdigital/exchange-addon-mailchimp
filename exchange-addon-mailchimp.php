@@ -61,7 +61,7 @@ function it_exchange_add_mailchimp_nag() {
 	?>
 	<div id="it-exchange-mailchimp-nag" class="it-exchange-nag">
 		<?php
-		_e( 'To use the MailChimp add-on for iThemes Exchange, you must be on the most recent version of iThemes Exchange. Please download and update your version of iThemes Exchange.', 'LION' );
+		printf( __( 'To use the MailChimp add-on for iThemes Exchange, you must be using iThemes Exchange version 1.0.3 or higher. <a href="%s">Please update now</a>.', 'LION' ), admin_url( 'update-core.php' ) );
 		?>
 	</div>
     <?php
