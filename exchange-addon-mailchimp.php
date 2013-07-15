@@ -87,7 +87,7 @@ add_action( 'plugins_loaded', 'it_exchange_mailchimp_set_textdomain' );
  * @param object $updater ithemes updater object
  * @return void
 */
-function ithemes_exchange_addon_stripe_updater_register( $updater ) { 
+function ithemes_exchange_addon_mailchimp_updater_register( $updater ) { 
 	    $updater->register( 'exchange-addon-mailchimp', __FILE__ );
 }
 add_action( 'ithemes_updater_register', 'ithemes_exchange_addon_mailchimp_updater_register' );
