@@ -291,7 +291,7 @@ class IT_Exchange_MailChimp_Add_On {
         
         <div class="it-exchange-addon-settings it-exchange-mailchimp-addon-settings">
             <p><?php _e( 'MailChimp allows store owners to manage and email lists of their currently subscribed customers.', 'LION' ); ?></p>
-            <p><?php _e( 'Video:', 'LION' ); ?>&nbsp;<a href="http://ithemes.com/tutorials/using-mailchimp-in-exchange/" target="_blank"><?php _e( 'Setting Up MailChimp in Exchange', 'LION' ); ?></a></p>
+            <p><?php _e( 'Video:', 'LION' ); ?>&nbsp;<a href="http://ithemes.com/tutorials/exchange-add-ons-mailchimp/" target="_blank"><?php _e( 'Setting Up MailChimp in Exchange', 'LION' ); ?></a></p>
             <p><?php _e( 'To setup MailChimp in Exchange, complete the settings below.', 'LION' ); ?></p>
 			<h4><label for="mailchimp-api-key"><?php _e( 'MailChimp API Key', 'LION' ) ?> <span class="tip" title="<?php _e( 'Enter your MailChimp API Key from your MailChimp dashboard, under Account Settings -> Extras -> API Keys', 'LION' ); ?>">i</span></label></h4>
 			<p> <?php $form->add_text_box( 'mailchimp-api-key' ); ?> </p>
