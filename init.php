@@ -361,6 +361,7 @@ class IT_Exchange_MailChimp_Add_On {
 	function set_default_settings( $defaults ) {
 		$defaults['mailchimp-api-key'] = '';
 		$defaults['mailchimp-label']   = __( 'Sign up to receive updates via email!', 'LION' );
+		$defaults['mailchimp-double-optin'] = true;
 		return $defaults;
 	}
 }
