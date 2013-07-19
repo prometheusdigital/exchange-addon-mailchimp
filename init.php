@@ -142,7 +142,7 @@ add_action( 'it_exchange_register_user', 'it_exchange_sign_up_email_to_mailchimp
  * @param array $fields existing fields
  * @return array
 */
-function it_exchange_mailchimp_sign_up_add_field_to_content_registration_template_part( $fields ) { 
+function it_exchange_mailchimp_sign_up_add_field_to_registration_template_parts( $fields ) { 
 
     /** 
      * We want to add our field right before the save button
@@ -159,7 +159,8 @@ function it_exchange_mailchimp_sign_up_add_field_to_content_registration_templat
 
     return $fields;
 }
-add_filter( 'it_exchange_get_content_registration_field_details', 'it_exchange_mailchimp_sign_up_add_field_to_content_registration_template_part' );
+add_filter( 'it_exchange_get_content_registration_fields_elements', 'it_exchange_mailchimp_sign_up_add_field_to_registration_template_parts' );
+add_filter( 'it_exchange_get_super_widget_registration_fields_elements', 'it_exchange_mailchimp_sign_up_add_field_to_registration_template_parts' );
 
 /**
  * This function tells Exchange to look in a directory in the MailChimp add-on for template parts
@@ -174,10 +175,11 @@ function it_exchange_mailchimp_add_template_directory( $template_paths, $templat
 
     /** 
      * Use the template_names array to target a specific template part you want to add
-     * In this example, we're adding the following template part: content-registration/details/my-addon-field.php
+     * In this example, we're adding the following template part: content-registration/fields/details/mailchimp-signup.php and super-widget-registration/fields/details/mailchimp-signup.php
      * So we're going to only add our templates directory if Exchange is looking for that part.
     */
-    if ( ! in_array( 'content-registration/fields/details/mailchimp-signup.php', $template_names ) ) 
+    if ( ! in_array( 'content-registration/elements/mailchimp-signup.php', $template_names )
+		&& ! in_array( 'super-widget-registration/elements/mailchimp-signup.php', $template_names ) ) 
         return $template_paths;
 
     /** 
