@@ -1,2 +1,4 @@
+1.0.1 - 2013-08-06 - Lew Ayotte
+    Fixed bug in i18n directory naming
 1.0.0 - 2013-07-31 - Lew Ayotte
 	Initial Release
