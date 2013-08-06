@@ -36,7 +36,6 @@ function it_exchange_register_mailchimp_addon() {
 			'author_url'        => 'http://ithemes.com/exchange/mailchimp/',
 			'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/images/mailchimp50px.png' ),
 			'file'              => dirname( __FILE__ ) . '/init.php',
-			'basename'          => plugin_basename( __FILE__ ),
 			'category'          => 'email',
 			'settings-callback' => 'it_exchange_mailchimp_settings_callback',
 		);
@@ -75,7 +74,7 @@ function it_exchange_add_mailchimp_nag() {
  * @return void
 */
 function it_exchange_mailchimp_set_textdomain() {
-	load_plugin_textdomain( 'LION', false, plugin_basename( __FILE__  ) . '/lang/' );
+	load_plugin_textdomain( 'LION', false, dirname( plugin_basename( __FILE__  ) ) . '/lang/' );
 }
 add_action( 'plugins_loaded', 'it_exchange_mailchimp_set_textdomain' );
 
