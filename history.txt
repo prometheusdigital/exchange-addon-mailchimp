@@ -15,3 +15,5 @@
 	Bug Fix: Corrected another source of the following warning which occur immediate after updating the plugin or theme: Warning: require_once(/api.php) [function.require-once]: failed to open stream: No such file or directory
 1.0.6 - 2013-10-22 - Lew Ayotte
 	Reorganizing the MailChimp Addon file hierachy for future development
+1.0.7 - 2013-10-22 - Lew Ayotte
+    Ixed include for MailChimp API Class

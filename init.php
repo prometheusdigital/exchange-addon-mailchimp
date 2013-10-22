@@ -7,7 +7,7 @@
 
 // Initialized MailChimp...
 if ( !class_exists( 'MCAPI' ) )
-	require_once( 'mailchimp-api/MCAPI.class.php' );
+	require_once( 'lib/mailchimp-api/MCAPI.class.php' );
 
 /**
  * Exchange will build your add-on's settings page for you and link to it from our add-on
