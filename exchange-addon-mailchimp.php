@@ -34,7 +34,7 @@ function it_exchange_register_mailchimp_addon() {
 			'description'       => __( 'Add MailChimp Opt-In Checkbox to user registration form.', 'LION' ),
 			'author'            => 'iThemes',
 			'author_url'        => 'http://ithemes.com/exchange/mailchimp/',
-			'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/images/mailchimp50px.png' ),
+			'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/mailchimp50px.png' ),
 			'file'              => dirname( __FILE__ ) . '/init.php',
 			'category'          => 'email',
 			'settings-callback' => 'it_exchange_mailchimp_settings_callback',
