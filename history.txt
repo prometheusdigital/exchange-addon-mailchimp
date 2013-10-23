@@ -16,4 +16,6 @@
 1.0.6 - 2013-10-22 - Lew Ayotte
 	Reorganizing the MailChimp Addon file hierachy for future development
 1.0.7 - 2013-10-22 - Lew Ayotte
-    Ixed include for MailChimp API Class
+    Fixed include for MailChimp API Class
+1.0.8 - 2013-10-23 - Lew Ayotte
+    Fixed version number for updater script
