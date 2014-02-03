@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: iThemes Exchange - MailChimp Add-on
- * Version: 1.0.12
+ * Version: 1.0.13
  * Description: Adds the MailChimp addon to iThemes Exchange
  * Plugin URI: http://ithemes.com/exchange/mailchimp/
  * Author: iThemes
