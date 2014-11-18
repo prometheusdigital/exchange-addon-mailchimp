@@ -18,8 +18,8 @@ function it_exchange_get_mailchimp_lists( $api_key ) {
 
 	if( !empty($api_key ) ) {
 		
-		$mc = new MCAPI( trim( $api_key ) );
-		$mc_lists = $mc->lists();
+		$mc = new Mailchimp( trim( $api_key ) );
+		$mc_lists = $mc->lists->getList();
 		
 		if( $mc_lists ) {
 			foreach( $mc_lists['data'] as $key => $list ) {

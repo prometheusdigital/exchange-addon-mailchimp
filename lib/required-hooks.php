@@ -45,7 +45,7 @@ function it_exchange_sign_up_email_to_mailchimp_list() {
 	
 	if( ! empty( $settings['mailchimp-api-key'] ) ) {
 		
-		if ( ! empty( $_POST['it-exchange-mailchimp-signup'] ) ) {
+		if ( ! empty( $_POST['it-exchange-mailchimp-signup'] ) || empty( $settings['mailchimp-optin'] ) ) {
 							
 			if ( ! empty( $_POST['email'] ) )
 				$email = trim( $_POST['email'] );
@@ -64,7 +64,7 @@ function it_exchange_sign_up_email_to_mailchimp_list() {
 									
 			if ( is_email( $email ) ) {
 				
-				$mc = new MCAPI( trim( $settings['mailchimp-api-key'] ) );
+				$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
 				$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
 				
 				$args = array();
@@ -73,7 +73,7 @@ function it_exchange_sign_up_email_to_mailchimp_list() {
 				if ( ! empty( $lname ) )
 					$args['LNAME'] = $lname;
 				
-				return $mc->listSubscribe( $settings['mailchimp-list'], $email, $args, 'html', $double_optin );
+				return $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), $args, 'html', $double_optin );
 			
 			}
 	
@@ -84,6 +84,42 @@ function it_exchange_sign_up_email_to_mailchimp_list() {
 	return false;
 }
 add_action( 'it_exchange_register_user', 'it_exchange_sign_up_email_to_mailchimp_list' );
+
+/**
+ * This function subscribes a guest checkout customer to a MailChimp list
+ *
+ * @since 1.0.0
+ *
+ * @param string $email Email address of guest checkout user
+ * @return void
+*/
+function it_exchange_addon_mailchimp_init_guest_checkout( $email ) {
+	
+	$settings = it_exchange_get_option( 'addon_mailchimp' );
+
+	if( ! empty( $settings['mailchimp-api-key'] ) ) {
+		
+		if ( ! empty( $_POST['it-exchange-mailchimp-signup'] ) || empty( $settings['mailchimp-optin'] ) ) {
+							
+			if ( ! empty( $email ) )
+				$email = trim( $email );
+			else
+				$email = false;
+													
+			if ( is_email( $email ) ) {
+				
+				$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
+				$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
+								
+				return $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), array(), 'html', $double_optin );
+			
+			}
+	
+		}
+				
+	}
+}
+add_action( 'it_exchange_init_guest_checkout', 'it_exchange_addon_mailchimp_init_guest_checkout' );
 
 /**
  * This function adds our registration field to the list of fields included in the content-registration template part
@@ -113,6 +149,62 @@ function it_exchange_mailchimp_sign_up_add_field_to_registration_template_parts(
 add_filter( 'it_exchange_get_content_registration_fields_elements', 'it_exchange_mailchimp_sign_up_add_field_to_registration_template_parts' );
 add_filter( 'it_exchange_get_super_widget_registration_fields_elements', 'it_exchange_mailchimp_sign_up_add_field_to_registration_template_parts' );
 
+
+/**
+ * This function adds our guest checkout field to the list of fields included in the content-guest-checkout template part
+ *
+ * @since 1.0.0
+ *
+ * @param array $fields existing fields
+ * @return array
+*/
+function it_exchange_mailchimp_get_super_widget_guest_checkout_fields_elements( $fields ) { 
+
+    /** 
+     * We want to add our field right before the save button
+     * 1) Find the save button
+     * 2) Spice our value in right before the save button
+     * 3) In the event that the save button wasn't found, just tack onto the end
+    */
+
+    $key = array_search( 'email', $fields );
+    if ( false === $key  )
+        $fields[] = 'mailchimp-signup';
+    else
+        array_splice( $fields, ++$key, 0, array( 'mailchimp-signup' ) );
+
+    return $fields;
+}
+add_filter( 'it_exchange_get_super_widget_guest_checkout_fields_elements', 'it_exchange_mailchimp_get_super_widget_guest_checkout_fields_elements' );
+
+
+/**
+ * This function adds our guest checkout field to the list of fields included in the content-guest-checkout template part
+ *
+ * @since 1.0.0
+ *
+ * @param array $fields existing fields
+ * @return array
+*/
+function it_exchange_mailchimp_get_super_widget_guest_checkout_actions_elements( $fields ) { 
+
+    /** 
+     * We want to add our field right before the save button
+     * 1) Find the save button
+     * 2) Spice our value in right before the save button
+     * 3) In the event that the save button wasn't found, just tack onto the end
+    */
+
+    $key = array_search( 'continue', $fields );
+    if ( false === $key  )
+        $fields[] = 'mailchimp-signup';
+    else
+        array_splice( $fields, ++$key, 0, array( 'mailchimp-signup' ) );
+
+    return $fields;
+}
+add_filter( 'it_exchange_get_content-checkout-guest-checkout-purchase-requirement_actions_elements', 'it_exchange_mailchimp_get_super_widget_guest_checkout_actions_elements' );
+
 /**
  * This function tells Exchange to look in a directory in the MailChimp add-on for template parts
  *
@@ -130,7 +222,9 @@ function it_exchange_mailchimp_add_template_directory( $template_paths, $templat
      * So we're going to only add our templates directory if Exchange is looking for that part.
     */
     if ( ! in_array( 'content-registration/elements/mailchimp-signup.php', $template_names )
-		&& ! in_array( 'super-widget-registration/elements/mailchimp-signup.php', $template_names ) ) 
+		&& ! in_array( 'content-checkout/elements/purchase-requirements/guest-checkout/elements/mailchimp-signup.php', $template_names )
+		&& ! in_array( 'super-widget-registration/elements/mailchimp-signup.php', $template_names )
+		&& ! in_array( 'super-widget-guest-checkout/elements/mailchimp-signup.php', $template_names ) ) 
         return $template_paths;
 
     /** 

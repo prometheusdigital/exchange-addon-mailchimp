@@ -11,7 +11,8 @@
 $settings = it_exchange_get_option( 'addon_mailchimp' );
 
 if (  ! empty( $settings['mailchimp-api-key'] ) 
-    && ( empty( $options['format'] ) || 'html' === $options['format'] ) ) {
+    && ( empty( $options['format'] ) || 'html' === $options['format'] )
+    && !empty( $settings['mailchimp-optin'] ) ) {
     
     echo '<div class="mailchimp-signup"><label for="it-exchange-mailchimp-signup"><input type="checkbox" id="it-exchange-mailchimp-signup" name="it-exchange-mailchimp-signup" /> ' . $settings['mailchimp-label'] . '</label></div>';
     

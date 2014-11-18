@@ -127,6 +127,8 @@ class IT_Exchange_MailChimp_Add_On {
 			<p> <?php $form->add_drop_down( 'mailchimp-list', $mailchimp_lists ); ?> </p>
 			<h4><label for="mailchimp-label"><?php _e( 'Sign-up Label', 'LION' ) ?> <span class="tip" title="<?php _e( 'This will be the label displayed next to the sign-up option on the registration page.', 'LION' ); ?>">i</span></label></h4>
             <p> <?php $form->add_text_box( 'mailchimp-label' ); ?> </p>
+			<h4><label for="mailchimp-optin"><?php _e( 'Enable Opt-in.', 'LION' ) ?> <span class="tip" title="<?php _e( 'Enabling opt-in is a good way to prevent your list from being black listed as SPAM. Users will only be added to this list if they select the opt-in checkmark when registering for an account.', 'LION' ); ?>">i</span></label></h4>
+			<p> <?php $form->add_check_box( 'mailchimp-optin' ); ?> </p>
 			<h4><label for="mailchimp-double-optin"><?php _e( 'Enable Double Opt-in.', 'LION' ) ?> <span class="tip" title="<?php _e( 'Enabling double opt-in is a good way to prevent your list from being black listed as SPAM. Users will be sent a confirmation email from MailChimp after signing up, and will only be added to your list after they have confirmed their subscription.', 'LION' ); ?>">i</span></label></h4>
 			<p> <?php $form->add_check_box( 'mailchimp-double-optin' ); ?> </p>
 		</div>
@@ -189,6 +191,7 @@ class IT_Exchange_MailChimp_Add_On {
 	function set_default_settings( $defaults ) {
 		$defaults['mailchimp-api-key'] = '';
 		$defaults['mailchimp-label']   = __( 'Sign up to receive updates via email!', 'LION' );
+		$defaults['mailchimp-optin'] = true;
 		$defaults['mailchimp-double-optin'] = true;
 		return $defaults;
 	}

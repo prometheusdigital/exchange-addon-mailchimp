@@ -6,8 +6,8 @@
 */
 
 // Initialized MailChimp...
-if ( !class_exists( 'MCAPI' ) )
-	require_once( 'lib/mailchimp-api/MCAPI.class.php' );
+if ( !class_exists( 'Mailchimp' ) )
+	require_once( 'lib/mailchimp-api/Mailchimp.php' );
 
 /**
  * Exchange will build your add-on's settings page for you and link to it from our add-on
@@ -35,3 +35,8 @@ include( 'lib/required-hooks.php' );
  * We decided to place all AJAX hooked functions into this file, just for ease of use
 */
 include( 'lib/addon-ajax-hooks.php' );
+
+/**
+ * New Product Features added by the Exchange Membership Add-on.
+*/
+require( 'lib/product-features/load.php' );
