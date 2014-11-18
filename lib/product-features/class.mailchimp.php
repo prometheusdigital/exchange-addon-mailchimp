@@ -106,6 +106,34 @@ class IT_Exchange_Product_Feature_MailChimp {
 	*/
 	function print_metabox( $product ) {
 		$settings = it_exchange_get_option( 'addon_mailchimp' );
+		$list_id      = it_exchange_get_product_feature( $product->ID, 'mailchimp', array( 'setting' => 'list-id' ) );
+		$double_optin = it_exchange_get_product_feature( $product->ID, 'mailchimp', array( 'setting' => 'double-optin' ) );
+
+		echo '<p>' . __( 'When a customer purchases this product, add them to this list...', 'LION' ) . '</p>';
+		if ( !empty( $settings['mailchimp-api-key'] ) ) {
+			$mailchimp_lists = it_exchange_get_mailchimp_lists( $settings['mailchimp-api-key'] );
+			if ( !empty( $mailchimp_lists ) ) {
+			?>
+			<h4><label for="mailchimp-list"><?php _e( 'MailChimp List', 'LION' ) ?> <span class="tip" title="<?php _e( 'This is the list you want to use from MailChimp.', 'LION' ); ?>">i</span></label></h4>
+			<select name="it-exchange-add-on-mailchimp-list-id">
+				<option value="0"><?php _e( 'Select a Mailchimp List', 'LION' ); ?></option>
+				<?php
+				foreach( $mailchimp_lists as $id => $name ) {
+					echo '<option value="' . $id . '" ' . selected( $id, $list_id, false ) . '>' . $name . '</option>';
+				}	
+				?>
+			</select>
+			
+			<h4><label for="mailchimp-double-optin"><?php _e( 'Enable Double Opt-in.', 'LION' ) ?> <span class="tip" title="<?php _e( 'Enabling double opt-in is a good way to prevent your list from being black listed as SPAM. Users will be sent a confirmation email from MailChimp after signing up, and will only be added to your list after they have confirmed their subscription.', 'LION' ); ?>">i</span></label></h4>
+			<p><input type="checkbox" name="it-exchange-add-on-mailchimp-double-optin" <?php checked( $double_optin ); ?> /></p>
+			<?php
+			} else {
+				_e( 'It appears that you do not have any MailChimp lists setup, go to Mailchimp and add at least one list to setup Mailchimp for this product.', 'LION' );
+			}
+		} else {
+			_e( 'You have not added a Mailchimp API key to your addon settings, please go to the Mailchimp add-on settings to complete the setup and return to this product to finish setting it up with a Mailchimp list.', 'LION' );
+		}
+		
 	}
 
 	/**
@@ -130,16 +158,13 @@ class IT_Exchange_Product_Feature_MailChimp {
 			return;
 
 		// Get new value from post
-		$tax_exempt = empty( $_POST['it-exchange-add-on-easy-eu-mailchimp-value-added-tax-exempt'] ) ? false : true;
-
+		$list_id = !empty( $_POST['it-exchange-add-on-mailchimp-list-id'] ) ? $_POST['it-exchange-add-on-mailchimp-list-id'] : 0;
 		// Save new value
-		it_exchange_update_product_feature( $product_id, 'mailchimp', $tax_exempt, array( 'setting' => 'exempt' ) );
-
+		it_exchange_update_product_feature( $product_id, 'mailchimp', $list_id, array( 'setting' => 'list-id' ) );
 		// Get new value from post
-		$tax_type = !isset( $_POST['it-exchange-add-on-easy-eu-mailchimp-value-added-tax-type'] ) ? 'default' : $_POST['it-exchange-add-on-easy-eu-mailchimp-value-added-tax-type'];
-
+		$double_optin = !empty( $_POST['it-exchange-add-on-mailchimp-double-optin'] ) ? true : false;
 		// Save new value
-		it_exchange_update_product_feature( $product_id, 'mailchimp', $tax_type, array( 'setting' => 'type' ) );
+		it_exchange_update_product_feature( $product_id, 'mailchimp', $double_optin, array( 'setting' => 'double-optin' ) );
 
 	}
 
@@ -149,21 +174,20 @@ class IT_Exchange_Product_Feature_MailChimp {
 	 * @since 1.0.0
 	 * @param integer $product_id the product id
 	 * @param mixed $new_value the new value
-	 * @return bolean
+	 * @return bool
 	*/
 	function save_feature( $product_id, $new_value, $options=array() ) {
-		$defaults['setting'] = 'exempt';
+		$defaults['setting'] = 'list-id';
 		$options = ITUtility::merge_defaults( $options, $defaults );
-		
-		switch ( $options['setting'] ) {
-			
-			case 'exempt':
-				update_post_meta( $product_id, '_it-exchange-easy-eu-mailchimp-exempt', $new_value );
-				break;
-			case 'type':
-				update_post_meta( $product_id, '_it-exchange-easy-eu-mailchimp-type', $new_value );
-				break;
-			
+
+		// Save enabled options
+		switch( $options['setting'] ) {
+			case 'list-id':
+				update_post_meta( $product_id, '_it-exchange-mailchimp-list-id', $new_value );
+				return;
+			case 'double-optin':
+				update_post_meta( $product_id, '_it-exchange-mailchimp-double-optin', $new_value );
+				return;
 		}
 		return true;
 	}
@@ -177,18 +201,21 @@ class IT_Exchange_Product_Feature_MailChimp {
 	 * @return string product feature
 	*/
 	function get_feature( $existing, $product_id, $options=array() ) {
-		$defaults['setting'] = 'exempt';
+		$defaults['setting'] = 'list-id';
 		$options = ITUtility::merge_defaults( $options, $defaults );
-		
-		switch ( $options['setting'] ) {
-			
-			case 'exempt':
-				return get_post_meta( $product_id, '_it-exchange-easy-eu-mailchimp-exempt', true );
-			case 'type':
-				return get_post_meta( $product_id, '_it-exchange-easy-eu-mailchimp-type', true );
 
+		// Save enabled options
+		switch( $options['setting'] ) {
+			case 'list-id':
+				return get_post_meta( $product_id, '_it-exchange-mailchimp-list-id', true );
+			case 'double-optin':
+				$double_optin = get_post_meta( $product_id, '_it-exchange-mailchimp-double-optin', true );
+				if ( false === $double_optin ) { //if false, then never set and assume true -- because it's safer
+					return true;
+				} else {
+					return $double_optin;
+				}
 		}
-		
 		return false;
 	}
 
@@ -201,9 +228,6 @@ class IT_Exchange_Product_Feature_MailChimp {
 	 * @return boolean
 	*/
 	function product_has_feature( $result, $product_id, $options=array() ) {
-		$defaults['setting'] = 'exempt';
-		$options = ITUtility::merge_defaults( $options, $defaults );
-
 		// Does this product type support this feature?
 		if ( false === $this->product_supports_feature( false, $product_id, $options ) )
 			return false;
@@ -223,10 +247,10 @@ class IT_Exchange_Product_Feature_MailChimp {
 	 * @param integer $product_id
 	 * @return boolean
 	*/
-	function product_supports_feature( $result, $product_id ) {
+	function product_supports_feature( $result, $product_id, $options=array() ) {
 		// Does this product type support this feature?
 		$product_type = it_exchange_get_product_type( $product_id );
-		if ( ! it_exchange_product_type_supports_feature( $product_type, 'mailchimp' ) )
+		if ( ! it_exchange_product_type_supports_feature( $product_type, 'mailchimp', $options ) )
 			return false;
 
 		return true;

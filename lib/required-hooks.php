@@ -236,3 +236,24 @@ function it_exchange_mailchimp_add_template_directory( $template_paths, $templat
     return $template_paths;
 }
 add_filter( 'it_exchange_possible_template_paths', 'it_exchange_mailchimp_add_template_directory', 10, 2 );
+
+function it_exchange_mailchimp_subscribe_product_lists_on_successful_transactions( $transaction_id ) {
+	if ( !empty( $transaction_id ) ) {
+		$settings = it_exchange_get_option( 'addon_mailchimp' );
+		$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
+	    $cart_object = get_post_meta( $transaction_id, '_it_exchange_cart_object', true );
+	    $customer = it_exchange_get_transaction_customer( $transaction_id );
+		if ( !empty( $cart_object->products ) ) {
+			foreach ( $cart_object->products as $product ) {
+				if ( it_exchange_product_supports_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) ) 
+					&& it_exchange_product_has_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) ) ) {
+					$list_id = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) );
+					$double_optin = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'double-optin' ) );
+					$double_optin = empty( $double_optin ) ? false : true; //want to make sure it's boolean at this point
+					$mc->lists->subscribe( $list_id, array( 'email' => $customer->user_email ), array(), 'html', $double_optin );
+				}
+			}
+		}
+	}
+}
+add_filter( 'it_exchange_add_transaction_success', 'it_exchange_mailchimp_subscribe_product_lists_on_successful_transactions', 20 );
