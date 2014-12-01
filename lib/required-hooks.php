@@ -73,8 +73,14 @@ function it_exchange_sign_up_email_to_mailchimp_list() {
 				if ( ! empty( $lname ) )
 					$args['LNAME'] = $lname;
 				
-				return $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), $args, 'html', $double_optin );
+				try {			
+					$return = $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), $args, 'html', $double_optin );
+				}
+				catch ( Exception $e ) {
+					$return = false;
+				}
 			
+				return $return;
 			}
 	
 		}
@@ -110,8 +116,15 @@ function it_exchange_addon_mailchimp_init_guest_checkout( $email ) {
 				
 				$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
 				$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
-								
-				return $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), array(), 'html', $double_optin );
+					
+				try {			
+					$return = $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), array(), 'html', $double_optin );
+				}
+				catch ( Exception $e ) {
+					$return = false;
+				}
+			
+				return $return;
 			
 			}
 	
@@ -250,10 +263,16 @@ function it_exchange_mailchimp_subscribe_product_lists_on_successful_transaction
 					$list_id = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) );
 					$double_optin = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'double-optin' ) );
 					$double_optin = empty( $double_optin ) ? false : true; //want to make sure it's boolean at this point
-					$mc->lists->subscribe( $list_id, array( 'email' => $customer->data->user_email ), array(), 'html', $double_optin );
+					try {
+						$mc->lists->subscribe( $list_id, array( 'email' => $customer->data->user_email ), array(), 'html', $double_optin );
+					}
+					catch ( Exception $e ) {
+						//nothing to do here.
+					}
 				}
 			}
 		}
 	}
+	return $transaction_id;
 }
 add_filter( 'it_exchange_add_transaction_success', 'it_exchange_mailchimp_subscribe_product_lists_on_successful_transactions', 20 );
