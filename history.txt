@@ -38,3 +38,10 @@
 1.0.14 - 2014-11-14 - Packaging Bot (lib/updater)
 	Enhancement: Reduced caching to allow updates to appear more quickly.
 	Enhancement: Authenticating users now uses the new authentication system.
+2.0.0 - 2014-12-03 - Lew Ayotte
+	Fixing bug in transaction hook
+	Adding Mailchimp list subscription feature for individual products
+	Updated Mailchimp API and SDK to 2.0
+	Adding guest checkout to signup process
+	Adding ability to disable 'opt-in' during registration/checkout
+
