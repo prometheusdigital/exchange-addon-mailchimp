@@ -1,21 +1,5 @@
 <?php
 
-require_once 'Mailchimp/Folders.php';
-require_once 'Mailchimp/Templates.php';
-require_once 'Mailchimp/Users.php';
-require_once 'Mailchimp/Helper.php';
-require_once 'Mailchimp/Mobile.php';
-require_once 'Mailchimp/Conversations.php';
-require_once 'Mailchimp/Ecomm.php';
-require_once 'Mailchimp/Neapolitan.php';
-require_once 'Mailchimp/Lists.php';
-require_once 'Mailchimp/Campaigns.php';
-require_once 'Mailchimp/Vip.php';
-require_once 'Mailchimp/Reports.php';
-require_once 'Mailchimp/Gallery.php';
-require_once 'Mailchimp/Goal.php';
-require_once 'Mailchimp/Exceptions.php';
-
 class Mailchimp {
     
     public $apikey;
@@ -120,6 +104,23 @@ class Mailchimp {
     );
 
     public function __construct($apikey=null, $opts=array()) {
+		
+		require_once 'Mailchimp/Folders.php';
+		require_once 'Mailchimp/Templates.php';
+		require_once 'Mailchimp/Users.php';
+		require_once 'Mailchimp/Helper.php';
+		require_once 'Mailchimp/Mobile.php';
+		require_once 'Mailchimp/Conversations.php';
+		require_once 'Mailchimp/Ecomm.php';
+		require_once 'Mailchimp/Neapolitan.php';
+		require_once 'Mailchimp/Lists.php';
+		require_once 'Mailchimp/Campaigns.php';
+		require_once 'Mailchimp/Vip.php';
+		require_once 'Mailchimp/Reports.php';
+		require_once 'Mailchimp/Gallery.php';
+		require_once 'Mailchimp/Goal.php';
+		require_once 'Mailchimp/Exceptions.php';
+
         if (!$apikey) {
             $apikey = getenv('MAILCHIMP_APIKEY');
         }
