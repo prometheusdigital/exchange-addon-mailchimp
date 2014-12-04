@@ -263,8 +263,13 @@ function it_exchange_mailchimp_subscribe_product_lists_on_successful_transaction
 					$list_id = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) );
 					$double_optin = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'double-optin' ) );
 					$double_optin = empty( $double_optin ) ? false : true; //want to make sure it's boolean at this point
+					$args = array();
+					if ( ! empty( $customer->data->first_name ) )
+						$args['FNAME'] = $customer->data->first_name;
+					if ( ! empty( $customer->data->last_name ) )
+						$args['LNAME'] = $customer->data->last_name;
 					try {
-						$mc->lists->subscribe( $list_id, array( 'email' => $customer->data->user_email ), array(), 'html', $double_optin );
+						$mc->lists->subscribe( $list_id, array( 'email' => $customer->data->user_email ), $args, 'html', $double_optin );
 					}
 					catch ( Exception $e ) {
 						//nothing to do here.
