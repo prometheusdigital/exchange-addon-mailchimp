@@ -105,21 +105,54 @@ class Mailchimp {
 
     public function __construct($apikey=null, $opts=array()) {
 		
-		require_once 'Mailchimp/Folders.php';
-		require_once 'Mailchimp/Templates.php';
-		require_once 'Mailchimp/Users.php';
-		require_once 'Mailchimp/Helper.php';
-		require_once 'Mailchimp/Mobile.php';
-		require_once 'Mailchimp/Conversations.php';
-		require_once 'Mailchimp/Ecomm.php';
-		require_once 'Mailchimp/Neapolitan.php';
-		require_once 'Mailchimp/Lists.php';
-		require_once 'Mailchimp/Campaigns.php';
-		require_once 'Mailchimp/Vip.php';
-		require_once 'Mailchimp/Reports.php';
-		require_once 'Mailchimp/Gallery.php';
-		require_once 'Mailchimp/Goal.php';
-		require_once 'Mailchimp/Exceptions.php';
+		if ( !class_exists( 'Mailchimp_Folders' ) ) {
+			require_once 'Mailchimp/Folders.php';
+		}
+		if ( !class_exists( 'Mailchimp_Templates' ) ) {
+			require_once 'Mailchimp/Templates.php';
+		}
+		if ( !class_exists( 'Mailchimp_Users' ) ) {
+			require_once 'Mailchimp/Users.php';
+		}
+		if ( !class_exists( 'Mailchimp_Folers' ) ) {
+			require_once 'Mailchimp/Folders.php';
+		}
+		if ( !class_exists( 'Mailchimp_Helper' ) ) {
+			require_once 'Mailchimp/Helper.php';
+		}
+		if ( !class_exists( 'Mailchimp_Mobile' ) ) {
+			require_once 'Mailchimp/Mobile.php';
+		}
+		if ( !class_exists( 'Mailchimp_Conversations' ) ) {
+			require_once 'Mailchimp/Conversations.php';
+		}
+		if ( !class_exists( 'Mailchimp_Ecomm' ) ) {
+			require_once 'Mailchimp/Ecomm.php';
+		}
+		if ( !class_exists( 'Mailchimp_Neapolitan' ) ) {
+			require_once 'Mailchimp/Neapolitan.php';
+		}
+		if ( !class_exists( 'Mailchimp_Lists' ) ) {
+			require_once 'Mailchimp/Lists.php';
+		}
+		if ( !class_exists( 'Mailchimp_Campaigns' ) ) {
+			require_once 'Mailchimp/Campaigns.php';
+		}
+		if ( !class_exists( 'Mailchimp_Vip' ) ) {
+			require_once 'Mailchimp/Vip.php';
+		}
+		if ( !class_exists( 'Mailchimp_Reports' ) ) {
+			require_once 'Mailchimp/Reports.php';
+		}
+		if ( !class_exists( 'Mailchimp_Gallery' ) ) {
+			require_once 'Mailchimp/Gallery.php';
+		}
+		if ( !class_exists( 'Mailchimp_Goal' ) ) {
+			require_once 'Mailchimp/Goal.php';
+		}
+		if ( !class_exists( 'Mailchimp_Exceptions' ) ) {
+			require_once 'Mailchimp/Exceptions.php';
+		}
 
         if (!$apikey) {
             $apikey = getenv('MAILCHIMP_APIKEY');
@@ -260,5 +293,3 @@ class Mailchimp {
         }
     }
 }
-
-
