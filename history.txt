@@ -44,4 +44,7 @@
 	Updated Mailchimp API and SDK to 2.0
 	Adding guest checkout to signup process
 	Adding ability to disable 'opt-in' during registration/checkout
+2.0.1 - 2014-12-05 - Lew Ayotte
+	Adding first/last names during product subscribes
+	Modifying Mailchimp API to only include Mailchimp files when Mailchimp class is instantiated
 
