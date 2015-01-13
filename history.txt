@@ -47,4 +47,5 @@
 2.0.1 - 2014-12-05 - Lew Ayotte
 	Adding first/last names during product subscribes
 	Modifying Mailchimp API to only include Mailchimp files when Mailchimp class is instantiated
-
+2.0.2 - 2015-01-13 - Lew Ayotte
+	Fix for error when MailChimp API key is missing, also moved a few try/catch blocks
