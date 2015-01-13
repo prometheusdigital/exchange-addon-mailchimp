@@ -64,16 +64,16 @@ function it_exchange_sign_up_email_to_mailchimp_list() {
 									
 			if ( is_email( $email ) ) {
 				
-				$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
-				$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
-				
-				$args = array();
-				if ( ! empty( $fname ) )
-					$args['FNAME'] = $fname;
-				if ( ! empty( $lname ) )
-					$args['LNAME'] = $lname;
-				
 				try {			
+					$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
+					$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
+					
+					$args = array();
+					if ( ! empty( $fname ) )
+						$args['FNAME'] = $fname;
+					if ( ! empty( $lname ) )
+						$args['LNAME'] = $lname;
+				
 					$return = $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), $args, 'html', $double_optin );
 				}
 				catch ( Exception $e ) {
@@ -114,10 +114,9 @@ function it_exchange_addon_mailchimp_init_guest_checkout( $email ) {
 													
 			if ( is_email( $email ) ) {
 				
-				$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
-				$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
-					
-				try {			
+				try {		
+					$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
+					$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
 					$return = $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), array(), 'html', $double_optin );
 				}
 				catch ( Exception $e ) {
@@ -253,28 +252,30 @@ add_filter( 'it_exchange_possible_template_paths', 'it_exchange_mailchimp_add_te
 function it_exchange_mailchimp_subscribe_product_lists_on_successful_transactions( $transaction_id ) {
 	if ( !empty( $transaction_id ) ) {
 		$settings = it_exchange_get_option( 'addon_mailchimp' );
-		$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
-	    $cart_object = get_post_meta( $transaction_id, '_it_exchange_cart_object', true );
-	    $customer = it_exchange_get_transaction_customer( $transaction_id );
-		if ( !empty( $cart_object->products ) ) {
-			foreach ( $cart_object->products as $product ) {
-				if ( it_exchange_product_supports_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) ) 
-					&& it_exchange_product_has_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) ) ) {
-					$list_id = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) );
-					$double_optin = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'double-optin' ) );
-					$double_optin = empty( $double_optin ) ? false : true; //want to make sure it's boolean at this point
-					$args = array();
-					if ( ! empty( $customer->data->first_name ) )
-						$args['FNAME'] = $customer->data->first_name;
-					if ( ! empty( $customer->data->last_name ) )
-						$args['LNAME'] = $customer->data->last_name;
-					try {
-						$mc->lists->subscribe( $list_id, array( 'email' => $customer->data->user_email ), $args, 'html', $double_optin );
-					}
-					catch ( Exception $e ) {
-						//nothing to do here.
+		if ( !empty( $settings['mailchimp-api-key'] ) ) {
+			try {
+				$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
+			    $cart_object = get_post_meta( $transaction_id, '_it_exchange_cart_object', true );
+			    $customer = it_exchange_get_transaction_customer( $transaction_id );
+				if ( !empty( $cart_object->products ) ) {
+					foreach ( $cart_object->products as $product ) {
+						if ( it_exchange_product_supports_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) ) 
+							&& it_exchange_product_has_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) ) ) {
+							$list_id = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) );
+							$double_optin = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'double-optin' ) );
+							$double_optin = empty( $double_optin ) ? false : true; //want to make sure it's boolean at this point
+							$args = array();
+							if ( ! empty( $customer->data->first_name ) )
+								$args['FNAME'] = $customer->data->first_name;
+							if ( ! empty( $customer->data->last_name ) )
+								$args['LNAME'] = $customer->data->last_name;
+							$mc->lists->subscribe( $list_id, array( 'email' => $customer->data->user_email ), $args, 'html', $double_optin );
+						}
 					}
 				}
+			}
+			catch ( Exception $e ) {
+				//nothing to do here.
 			}
 		}
 	}
