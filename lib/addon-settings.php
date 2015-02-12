@@ -178,6 +178,13 @@ class IT_Exchange_MailChimp_Add_On {
 			$errors[] = __( 'The MailChimp API Key field cannot be left blank.', 'LION' );
 		if ( empty( $values['mailchimp-label'] ) )
 			$errors[] = __( 'The MailChimp sign-up label cannot be left blank.', 'LION' );
+			
+		try {
+			$mc = new Mailchimp( trim( $values['mailchimp-api-key'] ) );
+		}
+		catch ( Exception $e ) {
+			$errors[] = $e->getMessage();
+		}
 
 		return $errors;
 	}

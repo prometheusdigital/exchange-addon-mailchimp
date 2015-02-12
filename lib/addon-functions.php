@@ -17,14 +17,18 @@ function it_exchange_get_mailchimp_lists( $api_key ) {
 	$lists = array();
 
 	if( !empty($api_key ) ) {
-		
-		$mc = new Mailchimp( trim( $api_key ) );
-		$mc_lists = $mc->lists->getList();
-		
-		if( $mc_lists ) {
-			foreach( $mc_lists['data'] as $key => $list ) {
-				$lists[$list['id']] = $list['name'];
+		try {
+			$mc = new Mailchimp( trim( $api_key ) );
+			$mc_lists = $mc->lists->getList();
+			
+			if( $mc_lists ) {
+				foreach( $mc_lists['data'] as $key => $list ) {
+					$lists[$list['id']] = $list['name'];
+				}
 			}
+		}
+		catch ( Exception $e ) {
+			//nothing to do here
 		}
 	}
 	
