@@ -49,3 +49,5 @@
 	Modifying Mailchimp API to only include Mailchimp files when Mailchimp class is instantiated
 2.0.2 - 2015-01-13 - Lew Ayotte
 	Fix for error when MailChimp API key is missing, also moved a few try/catch blocks
+2.0.3 - 2015-02-12 - Lew Ayotte
+	Added better checking of MailChimp API key when saving settings and getting lists

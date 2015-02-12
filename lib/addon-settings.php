@@ -174,17 +174,20 @@ class IT_Exchange_MailChimp_Add_On {
 		
 		$default_wizard_mailchimp_settings = apply_filters( 'default_wizard_mailchimp_settings', array( 'mailchimp-api-key', 'mailchimp-list', 'mailchimp-label', 'mailchimp-double-optin' ) );
 		$errors = array();
-		if ( empty( $values['mailchimp-api-key'] ) )
+		if ( empty( $values['mailchimp-api-key'] ) ) {
 			$errors[] = __( 'The MailChimp API Key field cannot be left blank.', 'LION' );
+		} else {
+			try {
+				$mc = new Mailchimp( trim( $values['mailchimp-api-key'] ) );
+				$mc->helper->ping();
+			}
+			catch ( Exception $e ) {
+				$errors[] = $e->getMessage();
+			}
+		}
 		if ( empty( $values['mailchimp-label'] ) )
 			$errors[] = __( 'The MailChimp sign-up label cannot be left blank.', 'LION' );
 			
-		try {
-			$mc = new Mailchimp( trim( $values['mailchimp-api-key'] ) );
-		}
-		catch ( Exception $e ) {
-			$errors[] = $e->getMessage();
-		}
 
 		return $errors;
 	}
