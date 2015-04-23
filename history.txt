@@ -51,3 +51,5 @@
 	Fix for error when MailChimp API key is missing, also moved a few try/catch blocks
 2.0.3 - 2015-02-12 - Lew Ayotte
 	Added better checking of MailChimp API key when saving settings and getting lists
+2.0.4 - 2015-04-23 - Packaging Bot (lib/updater)
+	Compatibility Fix: Updated plugin and theme update data format to match changes in WordPress 4.2.
