@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: iThemes Exchange - MailChimp Add-on
- * Version: 2.1.0
+ * Version: 2.2.0
  * Description: Adds the MailChimp addon to iThemes Exchange
  * Plugin URI: http://ithemes.com/exchange/mailchimp/
  * Author: iThemes
@@ -27,7 +27,7 @@ function it_exchange_register_mailchimp_addon() {
 	$versions         = get_option( 'it-exchange-versions', false );
 	$current_version  = empty( $versions['current'] ) ? false: $versions['current'];
 	
-	if ( true || version_compare( $current_version, '1.0.3', '>' ) ) {
+	if ( true || version_compare( $current_version, '1.35.0', '>' ) ) {
 		
 		$options = array(
 			'name'              => __( 'MailChimp', 'LION' ),
@@ -60,7 +60,7 @@ function it_exchange_add_mailchimp_nag() {
 	?>
 	<div id="it-exchange-mailchimp-nag" class="it-exchange-nag">
 		<?php
-		printf( __( 'To use the MailChimp add-on for iThemes Exchange, you must be using iThemes Exchange version 1.0.3 or higher. <a href="%s">Please update now</a>.', 'LION' ), admin_url( 'update-core.php' ) );
+		printf( __( 'To use the MailChimp add-on for iThemes Exchange, you must be using iThemes Exchange version 1.35.0 or higher. <a href="%s">Please update now</a>.', 'LION' ), admin_url( 'update-core.php' ) );
 		?>
 	</div>
     <?php
