@@ -179,23 +179,28 @@ class IT_Exchange_MailChimp_Add_On {
 	 * Returns string of errors if anything is invalid
 	 *
 	 * @since 0.3.6
-	 * @return void
+	 *
+	 * @param array $values
+	 *
+	 * @return array
 	*/
 	function get_form_errors( $values ) {
 		
-		$default_wizard_mailchimp_settings = apply_filters( 'default_wizard_mailchimp_settings', array( 'mailchimp-api-key', 'mailchimp-list', 'mailchimp-label', 'mailchimp-double-optin' ) );
 		$errors = array();
+
 		if ( empty( $values['mailchimp-api-key'] ) ) {
 			$errors[] = __( 'The MailChimp API Key field cannot be left blank.', 'LION' );
 		} else {
-			try {
-				$mc = new Mailchimp( trim( $values['mailchimp-api-key'] ) );
-				$mc->helper->ping();
-			}
-			catch ( Exception $e ) {
-				$errors[] = $e->getMessage();
+
+			$response = it_exchange_mailchimp_api_request( '', 'GET', array(), null, array(
+				'api_key' => trim( $values['mailchimp-api-key'] )
+			) );
+
+			if ( is_wp_error( $response ) ) {
+				$errors[] = $response->get_error_message();
 			}
 		}
+
 		if ( empty( $values['mailchimp-label'] ) )
 			$errors[] = __( 'The MailChimp sign-up label cannot be left blank.', 'LION' );
 			
