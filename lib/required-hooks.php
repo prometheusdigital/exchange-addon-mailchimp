@@ -42,53 +42,38 @@ add_action( 'admin_enqueue_scripts', 'it_exchange_stripe_addon_admin_enqueue_scr
 function it_exchange_sign_up_email_to_mailchimp_list() {
 	
 	$settings = it_exchange_get_option( 'addon_mailchimp' );
-	
-	if( ! empty( $settings['mailchimp-api-key'] ) ) {
-		
-		if ( ! empty( $_POST['it-exchange-mailchimp-signup'] ) || empty( $settings['mailchimp-optin'] ) ) {
-							
-			if ( ! empty( $_POST['email'] ) )
-				$email = trim( $_POST['email'] );
-			else
-				$email = false;
-				
-			if ( ! empty( $_POST['first_name'] ) )
-				$fname = trim( $_POST['first_name'] );
-			else
-				$fname = false;
-				
-			if ( ! empty( $_POST['last_name'] ) )
-				$lname = trim( $_POST['last_name'] );
-			else
-				$lname = false;
-									
-			if ( is_email( $email ) ) {
-				
-				try {			
-					$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
-					$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
-					
-					$args = array();
-					if ( ! empty( $fname ) )
-						$args['FNAME'] = $fname;
-					if ( ! empty( $lname ) )
-						$args['LNAME'] = $lname;
-				
-					$return = $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), $args, 'html', $double_optin );
-				}
-				catch ( Exception $e ) {
-					$return = false;
-				}
-			
-				return $return;
-			}
-	
-		}
-			
+
+	if ( empty( $_POST['it-exchange-mailchimp-signup'] ) && ! empty( $settings['mailchimp-optin'] ) ) {
+		return false;
 	}
 
-	return false;
+	$email = ! empty( $_POST['email'] ) ? trim( $_POST['email'] ) : false;
+	$fname = ! empty( $_POST['first_name'] ) ? trim( $_POST['first_name'] ) : false;
+	$lname = ! empty( $_POST['last_name'] ) ? trim( $_POST['last_name'] ) : false;
+
+	if ( ! $email || ! is_email( $email ) ) {
+		return false;
+	}
+
+	$merge = array();
+
+	if ( $fname ) {
+		$merge['FNAME'] = $fname;
+	}
+
+	if ( $lname ) {
+		$merge['LNAME'] = $lname;
+	}
+
+	$response = it_exchange_mailchimp_subscribe_email_to_list( $email, '', $merge );
+
+	if ( is_wp_error( $response ) || is_null( $response ) ) {
+		return false;
+	}
+
+	return $response;
 }
+
 add_action( 'it_exchange_register_user', 'it_exchange_sign_up_email_to_mailchimp_list' );
 
 /**
@@ -97,40 +82,32 @@ add_action( 'it_exchange_register_user', 'it_exchange_sign_up_email_to_mailchimp
  * @since 1.0.0
  *
  * @param string $email Email address of guest checkout user
- * @return void
+ *
+ * @return array|false
 */
 function it_exchange_addon_mailchimp_init_guest_checkout( $email ) {
 	
 	$settings = it_exchange_get_option( 'addon_mailchimp' );
 
-	if( ! empty( $settings['mailchimp-api-key'] ) ) {
-		
-		if ( ! empty( $_POST['it-exchange-mailchimp-signup'] ) || empty( $settings['mailchimp-optin'] ) ) {
-							
-			if ( ! empty( $email ) )
-				$email = trim( $email );
-			else
-				$email = false;
-													
-			if ( is_email( $email ) ) {
-				
-				try {		
-					$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
-					$double_optin = empty( $settings['mailchimp-double-optin'] ) ? false : true;
-					$return = $mc->lists->subscribe( $settings['mailchimp-list'], array( 'email' => $email ), array(), 'html', $double_optin );
-				}
-				catch ( Exception $e ) {
-					$return = false;
-				}
-			
-				return $return;
-			
+	if ( ! empty( $_POST['it-exchange-mailchimp-signup'] ) || empty( $settings['mailchimp-optin'] ) ) {
+
+		$email = ! empty( $email ) ? trim( $email ) : false;
+
+		if ( is_email( $email ) ) {
+
+			$response = it_exchange_mailchimp_subscribe_email_to_list( $email );
+
+			if ( is_wp_error( $response ) || is_null( $response ) ) {
+				return false;
 			}
-	
+
+			return $response;
 		}
-				
 	}
+
+	return false;
 }
+
 add_action( 'it_exchange_init_guest_checkout', 'it_exchange_addon_mailchimp_init_guest_checkout' );
 
 /**
@@ -250,35 +227,47 @@ function it_exchange_mailchimp_add_template_directory( $template_paths, $templat
 add_filter( 'it_exchange_possible_template_paths', 'it_exchange_mailchimp_add_template_directory', 10, 2 );
 
 function it_exchange_mailchimp_subscribe_product_lists_on_successful_transactions( $transaction_id ) {
-	if ( !empty( $transaction_id ) ) {
-		$settings = it_exchange_get_option( 'addon_mailchimp' );
-		if ( !empty( $settings['mailchimp-api-key'] ) ) {
-			try {
-				$mc = new Mailchimp( trim( $settings['mailchimp-api-key'] ) );
-			    $cart_object = get_post_meta( $transaction_id, '_it_exchange_cart_object', true );
-			    $customer = it_exchange_get_transaction_customer( $transaction_id );
-				if ( !empty( $cart_object->products ) ) {
-					foreach ( $cart_object->products as $product ) {
-						if ( it_exchange_product_supports_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) ) 
-							&& it_exchange_product_has_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) ) ) {
-							$list_id = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'list-id' ) );
-							$double_optin = it_exchange_get_product_feature( $product['product_id'], 'mailchimp', array( 'setting' => 'double-optin' ) );
-							$double_optin = empty( $double_optin ) ? false : true; //want to make sure it's boolean at this point
-							$args = array();
-							if ( ! empty( $customer->data->first_name ) )
-								$args['FNAME'] = $customer->data->first_name;
-							if ( ! empty( $customer->data->last_name ) )
-								$args['LNAME'] = $customer->data->last_name;
-							$mc->lists->subscribe( $list_id, array( 'email' => $customer->data->user_email ), $args, 'html', $double_optin );
-						}
-					}
-				}
-			}
-			catch ( Exception $e ) {
-				//nothing to do here.
-			}
-		}
+
+	if ( ! $transaction_id ) {
+		return;
 	}
-	return $transaction_id;
+
+	$email       = it_exchange_get_transaction_customer_email( $transaction_id );
+    $customer    = it_exchange_get_transaction_customer( $transaction_id );
+	$transaction = it_exchange_get_transaction( $transaction_id );
+
+	if ( ! $transaction || ! $email ) {
+		return;
+	}
+
+	foreach ( $transaction->get_products() as $item ) {
+
+		$product = it_exchange_get_product( $item['product_id'] );
+
+		if ( ! $product->supports_feature( 'mailchimp' ) ) {
+			continue;
+		}
+
+		if ( ! $product->has_feature( 'mailchimp', array( 'setting' => 'list-id' ) ) ) {
+			continue;
+		}
+
+		$list_id      = $product->get_feature( 'mailchimp', array( 'setting' => 'list-id' ) );
+		$double_optin = $product->get_feature( 'mailchimp', array( 'setting' => 'double-optin' ) );
+		$double_optin = empty( $double_optin ) ? false : true;
+
+		$merge = array();
+
+		if ( $customer->data->first_name ) {
+			$merge['FNAME'] = $customer->data->first_name;
+		}
+
+		if ( $customer->data->last_name ) {
+			$merge['LNAME'] = $customer->data->last_name;
+		}
+
+		$response = it_exchange_mailchimp_subscribe_email_to_list( $email, $list_id, $merge, $double_optin );
+	}
 }
-add_filter( 'it_exchange_add_transaction_success', 'it_exchange_mailchimp_subscribe_product_lists_on_successful_transactions', 20 );
+
+add_action( 'it_exchange_add_transaction_success', 'it_exchange_mailchimp_subscribe_product_lists_on_successful_transactions', 20 );
