@@ -18,7 +18,7 @@
 function it_exchange_get_mailchimp_lists( $api_key = '' ) {
 	$lists = array();
 
-	$mc_lists = it_exchange_mailchimp_api_request( 'lists', 'GET', array(), null, array( 'api_key' => $api_key ) );
+	$mc_lists = it_exchange_mailchimp_api_request( 'lists', 'GET', array( 'count' => 100 ), null, array( 'api_key' => $api_key ) );
 
 	if ( is_wp_error( $mc_lists ) || is_null( $mc_lists ) || empty( $mc_lists['lists'] ) ) {
 		return $lists;
