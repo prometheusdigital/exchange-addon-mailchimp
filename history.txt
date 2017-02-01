@@ -59,3 +59,5 @@
 	PHP7 Updates
 2.2.0 - 2016-12-29 - Timothy Jacobs
     Tweak: Use v3 of MailChimp API
+2.2.1 - 2017-02-01 - Timothy Jacobs
+    Fix: Show 100 MailChimp lists instead of last 10.
