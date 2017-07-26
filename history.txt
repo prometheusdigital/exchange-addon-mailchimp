@@ -61,3 +61,6 @@
     Tweak: Use v3 of MailChimp API
 2.2.1 - 2017-02-01 - Timothy Jacobs
     Fix: Show 100 MailChimp lists instead of last 10.
+2.2.2 - 2017-08-01 - AJ Morris
+    Enhancement: Rebranding
+    Enhancement: New licensing and software update system
