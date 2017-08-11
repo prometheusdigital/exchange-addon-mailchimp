@@ -304,17 +304,12 @@ class IT_Exchange_MailChimp_Add_On {
 
 			// Check if anything passed on a message constituting a failure
 			if ( ! empty( $message ) ) {
-				$base_url = admin_url( 'admin.php?page=' . 'mailchimp-license' );
-				$redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
-
-				wp_redirect( $redirect );
-				exit();
+				return;
 			}
 
 			//$license_data->license will be either "valid" or "invalid"
 			update_option( 'exchange_mailchimp_license_status', $license_data->license );
-			// wp_redirect( admin_url( 'admin.php?page=' . 'mailchimp-license' ) );
-			exit();
+			return;
 		}
 
 	 // deactivate here
@@ -325,11 +320,8 @@ class IT_Exchange_MailChimp_Add_On {
 		 	if( ! check_admin_referer( 'exchange_mailchimp_nonce', 'exchange_mailchimp_nonce' ) )
 				return; // get out if we didn't click the Activate button
 
-			// retrieve the license from the database
-			// $license = trim( get_option( 'exchange_mailchimp_license_key' ) );
-
-	   $exchangewp_mailchimp_options = get_option( 'it-storage-exchange_addon_mailchimp' );
-	   $license = $exchangewp_mailchimp_options['mailchimp_license'];
+			$exchangewp_mailchimp_options = get_option( 'it-storage-exchange_addon_mailchimp' );
+			$license = trim( $exchangewp_mailchimp_options['mailchimp_license'] );
 
 
 			// data to send in our API request
@@ -351,11 +343,8 @@ class IT_Exchange_MailChimp_Add_On {
 					$message = __( 'An error occurred, please try again.' );
 				}
 
-				// $base_url = admin_url( 'admin.php?page=' . 'mailchimp-license' );
-				// $redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
+				return;
 
-				wp_redirect( 'admin.php?page=mailchimp-license' );
-				exit();
 			}
 
 			// decode the license data
@@ -365,8 +354,7 @@ class IT_Exchange_MailChimp_Add_On {
 				delete_option( 'exchange_mailchimp_license_status' );
 			}
 
-			// wp_redirect( admin_url( 'admin.php?page=' . 'mailchimp-license' ) );
-			exit();
+			return;
 
 		}
 
@@ -378,26 +366,26 @@ class IT_Exchange_MailChimp_Add_On {
 	* @since 1.2.2
 	*/
 	function exchange_mailchimp_admin_notices() {
-	if ( isset( $_GET['sl_activation'] ) && ! empty( $_GET['message'] ) ) {
+		if ( isset( $_GET['sl_activation'] ) && ! empty( $_GET['message'] ) ) {
 
-		switch( $_GET['sl_activation'] ) {
+			switch( $_GET['sl_activation'] ) {
 
-			case 'false':
-				$message = urldecode( $_GET['message'] );
-				?>
-				<div class="error">
-					<p><?php echo $message; ?></p>
-				</div>
-				<?php
-				break;
+				case 'false':
+					$message = urldecode( $_GET['message'] );
+					?>
+					<div class="error">
+						<p><?php echo $message; ?></p>
+					</div>
+					<?php
+					break;
 
-			case 'true':
-			default:
-				// Developers can put a custom success message here for when activation is successful if they way.
-				break;
+				case 'true':
+				default:
+					// Developers can put a custom success message here for when activation is successful if they way.
+					break;
 
+			}
 		}
-	}
 	}
 
 	/**
