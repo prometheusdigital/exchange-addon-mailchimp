@@ -1,6 +1,6 @@
 <?php
 /**
- * iThemes Exchange MailChimp Add-on
+ * ExchangeWP MailChimp Add-on
  *
  * @package IT_Exchange_Addon_MailChimp
  * @since   1.0.0
